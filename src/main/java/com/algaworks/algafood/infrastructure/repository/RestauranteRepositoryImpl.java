@@ -6,12 +6,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 
-@Component
+@Repository
 public class RestauranteRepositoryImpl implements RestauranteRepository {
 
 	@PersistenceContext
@@ -35,10 +35,8 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
 
 	@Transactional
 	@Override
-	public void remover(Restaurante restaurante) {
-		restaurante = manager.find(Restaurante.class, restaurante.getId());
-		manager.remove(restaurante);
-
+	public void remover(Long id) {
+		manager.remove(id);
 	}
 
 }

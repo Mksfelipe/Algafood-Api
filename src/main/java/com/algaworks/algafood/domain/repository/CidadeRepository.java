@@ -2,8 +2,11 @@ package com.algaworks.algafood.domain.repository;
 
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import com.algaworks.algafood.domain.model.Cidade;
 
+@Component
 public interface CidadeRepository {
 
 	public List<Cidade> listar();
@@ -12,6 +15,6 @@ public interface CidadeRepository {
 
 	public Cidade salvar(Cidade cidade);
 
-	public void remover(Cidade cidade);
+	public void remover(Long id);
 
 }

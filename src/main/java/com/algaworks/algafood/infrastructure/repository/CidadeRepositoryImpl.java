@@ -6,12 +6,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
-import org.springframework.stereotype.Component;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Repository;
 
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
 
-@Component
+@Repository
 public class CidadeRepositoryImpl implements CidadeRepository {
 
 	@PersistenceContext
@@ -35,10 +36,14 @@ public class CidadeRepositoryImpl implements CidadeRepository {
 
 	@Transactional
 	@Override
-	public void remover(Cidade cidade) {
-		cidade = manager.find(Cidade.class, cidade.getId());
-		manager.remove(cidade);
+	public void remover(Long id) {
+		Cidade cidade = buscar(id);
 
+		if (cidade == null) {
+			throw new EmptyResultDataAccessException(1);
+		}
+		
+		manager.remove(cidade);
 	}
 
 }
