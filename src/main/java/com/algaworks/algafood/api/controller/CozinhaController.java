@@ -1,6 +1,7 @@
 package com.algaworks.algafood.api.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,13 +35,13 @@ public class CozinhaController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Cozinha> buscar(@PathVariable Long id) {
-		Cozinha cozinha = cadastroCozinhaService.buscar(id);
+		Optional<Cozinha> cozinha = cadastroCozinhaService.buscar(id);
 
-		if (cozinha == null) {
+		if (cozinha.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
 
-		return ResponseEntity.ok(cozinha);
+		return ResponseEntity.ok(cozinha.get());
 	}
 
 	@PostMapping
@@ -62,7 +63,7 @@ public class CozinhaController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Cozinha> remover(@PathVariable Long id) {
+	public ResponseEntity<?> remover(@PathVariable Long id) {
 		try {
 			cadastroCozinhaService.remover(id);
 			return ResponseEntity.noContent().build();
@@ -70,7 +71,7 @@ public class CozinhaController {
 		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.notFound().build();
 		} catch (EntidadeEmUsoException e) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
 		}
 	}
 

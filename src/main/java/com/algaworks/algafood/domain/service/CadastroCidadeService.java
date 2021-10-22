@@ -1,6 +1,7 @@
 package com.algaworks.algafood.domain.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,33 +26,33 @@ public class CadastroCidadeService {
 	private EstadoRepository estadoRepository;
 
 	public List<Cidade> listar() {
-		return cidadeRepository.listar();
+		return cidadeRepository.findAll();
 	}
 
-	public Cidade buscar(Long id) {
-		return cidadeRepository.buscar(id);
+	public Optional<Cidade> buscar(Long id) {
+		return cidadeRepository.findById(id);
 	}
 
 	public Cidade salvar(Cidade cidade) {
 		Long estadoId = cidade.getEstado().getId();
-		Estado estado = estadoRepository.buscar(estadoId);
+		Optional<Estado> estado = estadoRepository.findById(estadoId);
 
 		if (estado == null) {
 			throw new EntidadeNaoEncontradaException(
 					String.format("Não existe cadastro de estado com código %d", estadoId));
 		}
 
-		cidade.setEstado(estado);
-		return cidadeRepository.salvar(cidade);
+		cidade.setEstado(estado.get());
+		return cidadeRepository.save(cidade);
 	}
 
 	public Cidade atualizar(Cidade cidade, Long id) {
-		Cidade cidadeAtual = cidadeRepository.buscar(id);
+		Optional<Cidade> cidadeAtual = cidadeRepository.findById(id);
 
-		if (cidadeAtual != null) {
-			BeanUtils.copyProperties(cidade, cidadeAtual, "id");
-			cidadeAtual = cidadeRepository.salvar(cidadeAtual);
-			return cidadeAtual;
+		if (cidadeAtual.isPresent()) {
+			BeanUtils.copyProperties(cidade, cidadeAtual.get(), "id");
+			Cidade cidadeSalvar = cidadeRepository.save(cidadeAtual.get());
+			return cidadeSalvar;
 		}
 
 		return cidade;
@@ -60,7 +61,7 @@ public class CadastroCidadeService {
 
 	public void excluir(Long id) {
 		try {
-			cidadeRepository.remover(id);
+			cidadeRepository.deleteById(id);
 
 		} catch (EmptyResultDataAccessException e) {
 			throw new EntidadeNaoEncontradaException(

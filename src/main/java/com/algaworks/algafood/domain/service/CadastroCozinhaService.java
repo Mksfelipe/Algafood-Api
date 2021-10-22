@@ -1,6 +1,7 @@
 package com.algaworks.algafood.domain.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,25 +20,25 @@ public class CadastroCozinhaService {
 	@Autowired
 	private CozinhaRepository cozinhaRepository;
 
-	public Cozinha buscar(Long id) {
-		return cozinhaRepository.buscar(id);
+	public Optional<Cozinha> buscar(Long id) {
+		return cozinhaRepository.findById(id);
 	}
 
 	public Cozinha salvar(Cozinha cozinha) {
-		return cozinhaRepository.salvar(cozinha);
+		return cozinhaRepository.save(cozinha);
 	}
 
 	public List<Cozinha> listar() {
-		return cozinhaRepository.listar();
+		return cozinhaRepository.findAll();
 	}
 	
 	public Cozinha atualizar(Long id, Cozinha cozinha) {
-		Cozinha cozinhaAtual = cozinhaRepository.buscar(id);
+		Optional<Cozinha> cozinhaAtual = cozinhaRepository.findById(id);
 		
-		if (cozinhaAtual != null) {
-			BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
-			cozinhaRepository.salvar(cozinhaAtual);
-			return cozinhaAtual;
+		if (cozinhaAtual.isPresent()) {
+			BeanUtils.copyProperties(cozinha, cozinhaAtual.get(), "id");
+			Cozinha cozinhaSalva = cozinhaRepository.save(cozinhaAtual.get());
+			return cozinhaSalva;
 		}
 		
 		return cozinha;
@@ -45,7 +46,7 @@ public class CadastroCozinhaService {
 
 	public void remover(Long id) {
 		try {
-			cozinhaRepository.remover(id);
+			cozinhaRepository.deleteById(id);
 		} catch (EmptyResultDataAccessException e) {
 			throw new EntidadeNaoEncontradaException(
 					String.format("Nao existe um cadastro de Cozinha com codigo %d", id));
