@@ -8,18 +8,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.algaworks.algafood.domain.model.Cozinha;
-import com.algaworks.algafood.domain.repository.CozinhaRepository;
+import com.algaworks.algafood.domain.model.Restaurante;
+import com.algaworks.algafood.domain.repository.RestauranteRepository;
 
 @RestController
 @RequestMapping("/teste")
 public class TesteController {
 
 	@Autowired
-	private CozinhaRepository cozinhaRepository;
+	private RestauranteRepository restauranteRepository;
 
-	//@GetMapping("/cozinhas/por-nome")
-	//public List<Cozinha> cozinhaPorNome(@RequestParam("nome") String nome) {
-	//	return cozinhaRepository.consultarPorNome(nome);
-	//}
+	@GetMapping("/restaurante/por-nome")
+	public List<Restaurante> restaurantePorNome(@RequestParam("nome") String nome, Long id) {
+		return restauranteRepository.consultarPorNome(nome, id);
+	}
 }

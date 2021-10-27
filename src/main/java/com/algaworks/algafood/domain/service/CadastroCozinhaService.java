@@ -31,16 +31,16 @@ public class CadastroCozinhaService {
 	public List<Cozinha> listar() {
 		return cozinhaRepository.findAll();
 	}
-	
+
 	public Cozinha atualizar(Long id, Cozinha cozinha) {
 		Optional<Cozinha> cozinhaAtual = cozinhaRepository.findById(id);
-		
+
 		if (cozinhaAtual.isPresent()) {
 			BeanUtils.copyProperties(cozinha, cozinhaAtual.get(), "id");
 			Cozinha cozinhaSalva = cozinhaRepository.save(cozinhaAtual.get());
 			return cozinhaSalva;
 		}
-		
+
 		return cozinha;
 	}
 
@@ -54,5 +54,9 @@ public class CadastroCozinhaService {
 			throw new EntidadeEmUsoException(
 					String.format("Cozinha de codigo %d nao pode ser removida, pois esta em uso", id));
 		}
+	}
+
+	public List<Cozinha> listarPorNome(String nome) {
+		return cozinhaRepository.findByNomeIgnoreCaseContaining(nome);
 	}
 }
