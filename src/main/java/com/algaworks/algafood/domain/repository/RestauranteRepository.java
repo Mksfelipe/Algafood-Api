@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.algaworks.algafood.domain.model.Restaurante;
 
 @Repository
-public interface RestauranteRepository extends JpaRepository<Restaurante, Long> {
+public interface RestauranteRepository extends JpaRepository<Restaurante, Long>, RestauranteRepositoryQueries {
 
 	public List<Restaurante> consultarPorNome(String nome, @RequestParam("id") Long id);
-	
+
 }
