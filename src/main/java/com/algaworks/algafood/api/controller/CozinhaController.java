@@ -1,11 +1,9 @@
 package com.algaworks.algafood.api.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,14 +31,8 @@ public class CozinhaController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Cozinha> buscar(@PathVariable Long id) {
-		Optional<Cozinha> cozinha = cadastroCozinhaService.buscar(id);
-
-		if (cozinha.isEmpty()) {
-			return ResponseEntity.notFound().build();
-		}
-
-		return ResponseEntity.ok(cozinha.get());
+	public Cozinha buscar(@PathVariable Long id) {
+		return cadastroCozinhaService.buscarOuFalhar(id);
 	}
 
 	@PostMapping
@@ -50,21 +42,17 @@ public class CozinhaController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<Cozinha> atualizar(@PathVariable Long id, @RequestBody Cozinha cozinha) {
+	public Cozinha atualizar(@PathVariable Long id, @RequestBody Cozinha cozinha) {
 
 		cozinha = cadastroCozinhaService.atualizar(id, cozinha);
 
-		if (cozinha != null) {
-			return ResponseEntity.ok(cozinha);
-		}
-
-		return ResponseEntity.notFound().build();
+		return cozinha;
 	}
 
 	@DeleteMapping("/{id}")
-	@ResponseStatus(HttpStatus.NOT_FOUND)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long id) {
-			cadastroCozinhaService.remover(id);
+		cadastroCozinhaService.remover(id);
 
 	}
 

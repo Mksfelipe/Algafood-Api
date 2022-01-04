@@ -1,7 +1,6 @@
 package com.algaworks.algafood.domain.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +16,12 @@ import com.algaworks.algafood.domain.repository.CozinhaRepository;
 @Service
 public class CadastroCozinhaService {
 
+	private static final String MSG_COZINHA_EM_USO = "Cozinha de codigo %d nao pode ser removida, pois esta em uso";
+
+	private static final String MSG_COZINHA_NAO_ENCONTRADA = "Nao existe um cadastro de Cozinha com codigo %d";
+
 	@Autowired
 	private CozinhaRepository cozinhaRepository;
-
-	public Optional<Cozinha> buscar(Long id) {
-		return cozinhaRepository.findById(id);
-	}
 
 	public Cozinha salvar(Cozinha cozinha) {
 		return cozinhaRepository.save(cozinha);
@@ -33,30 +32,29 @@ public class CadastroCozinhaService {
 	}
 
 	public Cozinha atualizar(Long id, Cozinha cozinha) {
-		Optional<Cozinha> cozinhaAtual = cozinhaRepository.findById(id);
+		Cozinha cozinhaAtual = buscarOuFalhar(id);
 
-		if (cozinhaAtual.isPresent()) {
-			BeanUtils.copyProperties(cozinha, cozinhaAtual.get(), "id");
-			Cozinha cozinhaSalva = cozinhaRepository.save(cozinhaAtual.get());
-			return cozinhaSalva;
-		}
+		BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
+		return salvar(cozinhaAtual);
 
-		return cozinha;
 	}
 
 	public void remover(Long id) {
 		try {
 			cozinhaRepository.deleteById(id);
 		} catch (EmptyResultDataAccessException e) {
-			throw new EntidadeNaoEncontradaException(
-					String.format("Nao existe um cadastro de Cozinha com codigo %d", id));
+			throw new EntidadeNaoEncontradaException(String.format(MSG_COZINHA_NAO_ENCONTRADA, id));
 		} catch (DataIntegrityViolationException e) {
-			throw new EntidadeEmUsoException(
-					String.format("Cozinha de codigo %d nao pode ser removida, pois esta em uso", id));
+			throw new EntidadeEmUsoException(String.format(MSG_COZINHA_EM_USO, id));
 		}
 	}
 
 	public List<Cozinha> listarPorNome(String nome) {
 		return cozinhaRepository.findByNomeIgnoreCaseContaining(nome);
+	}
+
+	public Cozinha buscarOuFalhar(Long id) {
+		return cozinhaRepository.findById(id)
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(String.format(MSG_COZINHA_NAO_ENCONTRADA, id)));
 	}
 }

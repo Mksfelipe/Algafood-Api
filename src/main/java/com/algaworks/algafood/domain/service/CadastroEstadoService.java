@@ -1,7 +1,6 @@
 package com.algaworks.algafood.domain.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,34 +9,27 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
-import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
+import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.repository.EstadoRepository;
 
 @Service
 public class CadastroEstadoService {
 
+	private static final String MSG_ESTADO_EM_USO = "Estado de código %d não pode ser removido, pois está em uso";
+	private static final String MSG_ESTADO_NAO_ENCONTRADO = "Não existe um cadastro de estado com código %d";
 	@Autowired
 	private EstadoRepository estadoRepository;
-
-	public Optional<Estado> buscar(Long id) {
-		return estadoRepository.findById(id);
-	}
 
 	public List<Estado> listar() {
 		return estadoRepository.findAll();
 	}
 
 	public Estado atualizar(Long id, Estado estado) {
-		Estado estadoAtual = estadoRepository.findById(id).orElse(null);
+		Estado estadoAtual = buscarOuFalhar(id);
+		BeanUtils.copyProperties(estado, estadoAtual, "id");
+		return salvar(estadoAtual);
 
-		if (estadoAtual != null) {
-			BeanUtils.copyProperties(estado, estadoAtual, "id");
-			Estado estadoSalvar = estadoRepository.save(estadoAtual);
-			return estadoSalvar;
-		}
-
-		return estado;
 	}
 
 	public Estado salvar(Estado estado) {
@@ -49,13 +41,16 @@ public class CadastroEstadoService {
 		try {
 			estadoRepository.deleteById(id);
 		} catch (EmptyResultDataAccessException e) {
-			throw new EntidadeNaoEncontradaException(
-					String.format("Não existe um cadastro de estado com código %d", id));
+			throw new EstadoNaoEncontradoException(String.format(MSG_ESTADO_NAO_ENCONTRADO, id));
 		} catch (DataIntegrityViolationException e) {
-			throw new EntidadeEmUsoException(
-					String.format("Estado de código %d não pode ser removido, pois está em uso", id));
+			throw new EntidadeEmUsoException(String.format(MSG_ESTADO_EM_USO, id));
 		}
 
+	}
+
+	public Estado buscarOuFalhar(Long estadoId) {
+		return estadoRepository.findById(estadoId).orElseThrow(
+				() -> new EstadoNaoEncontradoException(String.format(MSG_ESTADO_NAO_ENCONTRADO, estadoId)));
 	}
 
 }
