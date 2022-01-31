@@ -54,7 +54,7 @@ public class RestauranteController {
 
 	@GetMapping("/{id}")
 	public Restaurante buscar(@PathVariable Long id) {
-		return cadastroRestaurante.buscarOuFalhar(id);
+		return restauranteService.buscarOuFalhar(id);
 	}
 
 	@PostMapping
