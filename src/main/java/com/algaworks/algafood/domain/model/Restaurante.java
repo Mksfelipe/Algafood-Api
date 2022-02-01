@@ -44,12 +44,13 @@ public class Restaurante {
 	private Long id;
 
 	@Column(nullable = false)
-	@NotBlank(message = "e um campo obrigatório")
+	@NotBlank
 	private String nome;
 
 	@Column(name = "taxa_frete", nullable = false)
-	@PositiveOrZero(message = "nao pode ser um valor negativo")
-	@Digits(integer = 3, fraction = 2, message = "valor numérico fora dos limites de {3} digitos e {2} casas decimais ")
+	@NotNull
+	@PositiveOrZero
+	@Digits(integer = 3, fraction = 2)
 	private BigDecimal taxaFrete;
 
 	@Valid
