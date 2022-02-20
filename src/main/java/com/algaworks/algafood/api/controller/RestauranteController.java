@@ -37,10 +37,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping(value = "/restaurantes")
 public class RestauranteController {
 
-	
 	@Autowired
 	private CadastroRestauranteService restauranteService;
-	
+
 	@Autowired
 	private RestauranteRepository restauranteRepository;
 
@@ -67,7 +66,7 @@ public class RestauranteController {
 			throw new NegocioException(e.getMessage());
 		}
 	}
-	
+
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deletar(@PathVariable Long id) {
