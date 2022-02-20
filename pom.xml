@@ -15,7 +15,7 @@
 	<name>algafood-api</name>
 	<description>API de delivery de comida</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>openjdk-17.0.2</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
