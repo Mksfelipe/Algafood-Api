@@ -1,6 +1,5 @@
 package com.algaworks.algafood.domain.model;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,6 +20,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.groups.ConvertGroup;
 import javax.validation.groups.Default;
 
@@ -30,6 +30,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import com.algaworks.algafood.core.validation.Groups;
 import com.algaworks.algafood.core.validation.TaxaFrete;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -37,9 +38,8 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-public class Restaurante implements Serializable {
+public class Restaurante {
 
-	private static final long serialVersionUID = -5300031876387019023L;
 
 	@EqualsAndHashCode.Include
 	@Id
@@ -52,10 +52,12 @@ public class Restaurante implements Serializable {
 
 	@Column(name = "taxa_frete", nullable = false)
 	@NotNull
+	@PositiveOrZero
 	@TaxaFrete
 	@Digits(integer = 3, fraction = 2)
 	private BigDecimal taxaFrete;
 
+	@JsonIgnoreProperties(value = "nome", allowGetters = true)
 	@Valid
 	@ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
 	@NotNull

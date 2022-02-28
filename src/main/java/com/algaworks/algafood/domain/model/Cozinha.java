@@ -1,6 +1,5 @@
 package com.algaworks.algafood.domain.model;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,9 +22,8 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-public class Cozinha implements Serializable {
+public class Cozinha {
 
-	private static final long serialVersionUID = -2494100760521773465L;
 
 	@NotNull(groups = Groups.CozinhaId.class)
 	@EqualsAndHashCode.Include
