@@ -12,6 +12,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.groups.ConvertGroup;
 
 import com.algaworks.algafood.core.validation.Groups;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 
 import lombok.Data;
@@ -31,6 +32,7 @@ public class Cidade {
 	@NotBlank
 	private String nome;
 	
+	@JsonIgnoreProperties(value = "nome", allowGetters = true)
 	@Valid
 	@ConvertGroup(from = Default.class, to = Groups.EstadoId.class)
 	@ManyToOne

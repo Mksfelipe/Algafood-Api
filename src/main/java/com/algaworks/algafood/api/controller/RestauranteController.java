@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.algaworks.algafood.api.DTO.RestauranteDto;
 import com.algaworks.algafood.api.exceptionhandler.ValidacaoException;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
@@ -48,9 +50,12 @@ public class RestauranteController {
 
 	@Autowired
 	private CadastroRestauranteService cadastroRestaurante;
-	
+
 	@Autowired
 	private SmartValidator validator;
+
+	@Autowired
+	private ModelMapper modelMapper;
 
 	@GetMapping
 	public List<Restaurante> listar() {
@@ -58,8 +63,8 @@ public class RestauranteController {
 	}
 
 	@GetMapping("/{id}")
-	public Restaurante buscar(@PathVariable Long id) {
-		return restauranteService.buscarOuFalhar(id);
+	public RestauranteDto buscar(@PathVariable Long id) {
+		return convertToDto(restauranteService.buscarOuFalhar(id));
 	}
 
 	@PostMapping
@@ -101,11 +106,10 @@ public class RestauranteController {
 
 		merge(campos, restauranteAtual, request);
 		validate(restauranteAtual, "restaurante");
-		
-		
+
 		return atualizar(id, restauranteAtual);
 	}
-	
+
 	private void validate(Restaurante restaurante, String objectName) {
 		BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurante, objectName);
 		validator.validate(restaurante, bindingResult);
@@ -137,6 +141,11 @@ public class RestauranteController {
 			Throwable rootCause = ExceptionUtils.getRootCause(e);
 			throw new HttpMessageNotReadableException(e.getMessage(), rootCause, serverHttpRequest);
 		}
+	}
+
+	private RestauranteDto convertToDto(Restaurante restaurante) {
+		RestauranteDto restauranteDto = modelMapper.map(restaurante, RestauranteDto.class);
+		return restauranteDto;
 	}
 
 }

@@ -6,6 +6,9 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import lombok.Data;
 
 @Data
@@ -22,6 +25,7 @@ public class Endereco  {
 	private String numero;
 	
 	@Column(name = "endereco_complemento")
+	@JsonInclude(Include.NON_NULL)
 	private String complemento;
 	
 	@Column(name = "endereco_bairro")
