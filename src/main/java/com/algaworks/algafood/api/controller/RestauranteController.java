@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.controller;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -28,12 +29,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.algaworks.algafood.api.DTO.RestauranteDto;
 import com.algaworks.algafood.api.exceptionhandler.ValidacaoException;
+import com.algaworks.algafood.api.model.RestauranteModel;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Restaurante;
-import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,32 +46,27 @@ public class RestauranteController {
 	private CadastroRestauranteService restauranteService;
 
 	@Autowired
-	private RestauranteRepository restauranteRepository;
-
-	@Autowired
-	private CadastroRestauranteService cadastroRestaurante;
-
-	@Autowired
 	private SmartValidator validator;
 
 	@Autowired
 	private ModelMapper modelMapper;
 
 	@GetMapping
-	public List<Restaurante> listar() {
-		return restauranteRepository.findAll();
+	public List<RestauranteModel> listar() {
+		return toCollectionModel(restauranteService.listar());
 	}
 
 	@GetMapping("/{id}")
-	public RestauranteDto buscar(@PathVariable Long id) {
-		return convertToDto(restauranteService.buscarOuFalhar(id));
+	public RestauranteModel buscar(@PathVariable Long id) {
+		Restaurante restaurante = restauranteService.buscarOuFalhar(id);
+		return convertToDto(restaurante);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Restaurante adicionar(@RequestBody @Valid Restaurante restaurante) {
+	public RestauranteModel adicionar(@RequestBody @Valid Restaurante restaurante) {
 		try {
-			return cadastroRestaurante.salvar(restaurante);
+			return  convertToDto(restauranteService.salvar(restaurante));
 
 		} catch (CozinhaNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
@@ -85,14 +80,14 @@ public class RestauranteController {
 	}
 
 	@PutMapping("/{id}")
-	public Restaurante atualizar(@PathVariable Long id, @RequestBody Restaurante restaurante) {
-		Restaurante restauranteAtual = cadastroRestaurante.buscarOuFalhar(id);
+	public RestauranteModel atualizar(@PathVariable Long id, @RequestBody Restaurante restaurante) {
+		Restaurante restauranteAtual = restauranteService.buscarOuFalhar(id);
 
 		BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro",
 				"produtos");
 
 		try {
-			return cadastroRestaurante.salvar(restauranteAtual);
+			return convertToDto(restauranteService.salvar(restauranteAtual));
 		} catch (CozinhaNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
 		}
@@ -100,9 +95,9 @@ public class RestauranteController {
 	}
 
 	@PatchMapping("/{id}")
-	public Restaurante atualizarParcial(@PathVariable Long id, @RequestBody Map<String, Object> campos,
+	public RestauranteModel atualizarParcial(@PathVariable Long id, @RequestBody Map<String, Object> campos,
 			HttpServletRequest request) {
-		Restaurante restauranteAtual = cadastroRestaurante.buscarOuFalhar(id);
+		Restaurante restauranteAtual = restauranteService.buscarOuFalhar(id);
 
 		merge(campos, restauranteAtual, request);
 		validate(restauranteAtual, "restaurante");
@@ -143,9 +138,15 @@ public class RestauranteController {
 		}
 	}
 
-	private RestauranteDto convertToDto(Restaurante restaurante) {
-		RestauranteDto restauranteDto = modelMapper.map(restaurante, RestauranteDto.class);
-		return restauranteDto;
+	private RestauranteModel convertToDto(Restaurante restaurante) {
+	    RestauranteModel restauranteModel = modelMapper.map(restaurante, RestauranteModel.class);
+	    return restauranteModel;
 	}
-
+	
+	private List<RestauranteModel> toCollectionModel(List<Restaurante> restaurantes) {
+		return restaurantes.stream()
+				.map(restaurante -> convertToDto(restaurante))
+				.collect(Collectors.toList());
+	}
+	
 }
