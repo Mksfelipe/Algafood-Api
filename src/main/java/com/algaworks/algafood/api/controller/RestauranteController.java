@@ -1,6 +1,7 @@
 package com.algaworks.algafood.api.controller;
 
 import java.lang.reflect.Field;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.exceptionhandler.ValidacaoException;
 import com.algaworks.algafood.api.model.RestauranteModel;
+import com.algaworks.algafood.api.model.input.RestauranteInput;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Restaurante;
@@ -64,9 +66,12 @@ public class RestauranteController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public RestauranteModel adicionar(@RequestBody @Valid Restaurante restaurante) {
+	public RestauranteModel adicionar(@RequestBody @Valid RestauranteInput restauranteInput) throws ParseException {
 		try {
-			return  convertToDto(restauranteService.salvar(restaurante));
+			
+			Restaurante restaurante = convertToEntity(restauranteInput);
+			
+			return convertToDto(restauranteService.salvar(restaurante));
 
 		} catch (CozinhaNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
@@ -139,14 +144,18 @@ public class RestauranteController {
 	}
 
 	private RestauranteModel convertToDto(Restaurante restaurante) {
-	    RestauranteModel restauranteModel = modelMapper.map(restaurante, RestauranteModel.class);
-	    return restauranteModel;
+		RestauranteModel restauranteModel = modelMapper.map(restaurante, RestauranteModel.class);
+		return restauranteModel;
 	}
-	
+
+	private Restaurante convertToEntity(RestauranteInput restauranteInput) throws ParseException {
+		Restaurante restaurante = modelMapper.map(restauranteInput, Restaurante.class);
+
+		return restaurante;
+	}
+
 	private List<RestauranteModel> toCollectionModel(List<Restaurante> restaurantes) {
-		return restaurantes.stream()
-				.map(restaurante -> convertToDto(restaurante))
-				.collect(Collectors.toList());
+		return restaurantes.stream().map(restaurante -> convertToDto(restaurante)).collect(Collectors.toList());
 	}
-	
+
 }
