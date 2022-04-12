@@ -12,14 +12,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.algaworks.algafood.domain.model.Cozinha;
-import com.algaworks.algafood.domain.service.CadastroCozinhaService;
+import com.algaworks.algafood.domain.service.CozinhaService;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class CadastroCozinhaIntegrationTests  {
 
 	@Autowired
-	private CadastroCozinhaService cadastroCozinha;
+	private CozinhaService cadastroCozinha;
 	
 	@Test
 	public void deveAtribuirId_QuandoCadastrarCozinhaComDadosCorretos() {

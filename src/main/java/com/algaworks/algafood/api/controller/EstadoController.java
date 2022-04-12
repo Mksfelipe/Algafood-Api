@@ -16,43 +16,62 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.algaworks.algafood.api.assembler.EstadoInputDisassembler;
+import com.algaworks.algafood.api.assembler.EstadoModelAssembler;
+import com.algaworks.algafood.api.model.EstadoModel;
+import com.algaworks.algafood.api.model.input.EstadoInput;
 import com.algaworks.algafood.domain.model.Estado;
-import com.algaworks.algafood.domain.service.CadastroEstadoService;
+import com.algaworks.algafood.domain.service.EstadoService;
 
 @RestController
 @RequestMapping("/estados")
 public class EstadoController {
 
 	@Autowired
-	private CadastroEstadoService cadastroEstadoService;
+	private EstadoService estadoService;
+
+	@Autowired
+	private EstadoModelAssembler estadoModelAssembler;
+	
+	@Autowired
+	private EstadoInputDisassembler estadoInputDisassembler;
 
 	@GetMapping
-	public List<Estado> listar() {
-		return cadastroEstadoService.listar();
+	public List<EstadoModel> listar() {
+		return estadoModelAssembler.toCollectionModel(estadoService.listar());
 	}
 
 	@GetMapping("/{id}")
-	public Estado buscar(@PathVariable Long id) {
-		return cadastroEstadoService.buscarOuFalhar(id);
+	public EstadoModel buscar(@PathVariable Long id) {
+		return estadoModelAssembler.toModel(estadoService.buscarOuFalhar(id));
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Estado adicionar(@RequestBody @Valid Estado estado) {
-		return cadastroEstadoService.salvar(estado);
+	public EstadoModel adicionar(@RequestBody @Valid EstadoInput estadoInput) {
+		Estado estado = estadoInputDisassembler.toDomainObject(estadoInput);
+		
+		estado = estadoService.salvar(estado);
+		
+		return estadoModelAssembler.toModel(estado);
 	}
 
-	@PutMapping("/{id}")
-	public Estado atualizar(@PathVariable Long id, @RequestBody Estado estado) {
-		estado = cadastroEstadoService.atualizar(id, estado);
-
-		return estado;
-	}
+	@PutMapping("/{estadoId}")
+	public EstadoModel atualizar(@PathVariable Long estadoId,
+	        @RequestBody @Valid EstadoInput estadoInput) {
+	    Estado estadoAtual = estadoService.buscarOuFalhar(estadoId);
+	    
+	    estadoInputDisassembler.copyToDomainObject(estadoInput, estadoAtual);
+	    
+	    estadoAtual = estadoService.salvar(estadoAtual);
+	    
+	    return estadoModelAssembler.toModel(estadoAtual);
+	} 
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long id) {
-		cadastroEstadoService.excluir(id);
+		estadoService.excluir(id);
 	}
 
 }

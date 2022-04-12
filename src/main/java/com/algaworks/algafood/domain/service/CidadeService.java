@@ -16,7 +16,7 @@ import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
 
 @Service
-public class CadastroCidadeService {
+public class CidadeService {
 
 	private static final String MSG_CIDADE_EM_USO = "Cidade de código %d não pode ser removida, pois está em uso";
 
@@ -26,7 +26,7 @@ public class CadastroCidadeService {
 	private CidadeRepository cidadeRepository;
 
 	@Autowired
-	private CadastroEstadoService estadoService;
+	private EstadoService estadoService;
 
 	public List<Cidade> listar() {
 		return cidadeRepository.findAll();
@@ -55,6 +55,7 @@ public class CadastroCidadeService {
 	public void excluir(Long id) {
 		try {
 			cidadeRepository.deleteById(id);
+			cidadeRepository.flush();
 		} catch (EmptyResultDataAccessException e) {
 			throw new CidadeNaoEncontradaException(String.format(MSG_CIDADE_NAO_ENCONTRADA, id));
 

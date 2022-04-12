@@ -15,7 +15,7 @@ import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 
 @Service
-public class CadastroCozinhaService {
+public class CozinhaService {
 
 	private static final String MSG_COZINHA_EM_USO = "Cozinha de codigo %d nao pode ser removida, pois esta em uso";
 
@@ -45,6 +45,7 @@ public class CadastroCozinhaService {
 	public void remover(Long id) {
 		try {
 			cozinhaRepository.deleteById(id);
+			cozinhaRepository.flush();
 		} catch (EmptyResultDataAccessException e) {
 			throw new CozinhaNaoEncontradaException(String.format(MSG_COZINHA_NAO_ENCONTRADA, id));
 		} catch (DataIntegrityViolationException e) {

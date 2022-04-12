@@ -15,7 +15,7 @@ import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 
 @Service
-public class CadastroRestauranteService {
+public class RestauranteService {
 
 	private static final String MSG_RESTAURANTE_NAO_ENCONTRADO = "Não existe um cadastro de restaurante com código %d";
 
@@ -25,7 +25,7 @@ public class CadastroRestauranteService {
 	private RestauranteRepository restauranteRepository;
 
 	@Autowired
-	private CadastroCozinhaService cadastroCozinha;
+	private CozinhaService cadastroCozinha;
 
 	public List<Restaurante> listar() {
 		return restauranteRepository.findAll();
@@ -46,6 +46,7 @@ public class CadastroRestauranteService {
 	public void excluir(Long id) {
 		try {
 			restauranteRepository.deleteById(id);
+			restauranteRepository.flush();
 		} catch (EmptyResultDataAccessException e) {
 			throw new RestauranteNaoEncontradaException(String.format(MSG_RESTAURANTE_NAO_ENCONTRADO, id));
 		} catch (DataIntegrityViolationException e) {

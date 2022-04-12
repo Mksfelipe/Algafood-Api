@@ -15,7 +15,7 @@ import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.repository.EstadoRepository;
 
 @Service
-public class CadastroEstadoService {
+public class EstadoService {
 
 	private static final String MSG_ESTADO_EM_USO = "Estado de código %d não pode ser removido, pois está em uso";
 	private static final String MSG_ESTADO_NAO_ENCONTRADO = "Não existe um cadastro de estado com código %d";
@@ -43,6 +43,7 @@ public class CadastroEstadoService {
 
 		try {
 			estadoRepository.deleteById(id);
+			estadoRepository.flush();
 		} catch (EmptyResultDataAccessException e) {
 			throw new EstadoNaoEncontradoException(String.format(MSG_ESTADO_NAO_ENCONTRADO, id));
 		} catch (DataIntegrityViolationException e) {

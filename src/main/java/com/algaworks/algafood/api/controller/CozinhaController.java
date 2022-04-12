@@ -17,51 +17,69 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.algaworks.algafood.api.assembler.CozinhaInputDisassembler;
+import com.algaworks.algafood.api.assembler.CozinhaModelAssembler;
+import com.algaworks.algafood.api.model.CozinhaModel;
+import com.algaworks.algafood.api.model.input.CozinhaInput;
 import com.algaworks.algafood.domain.model.Cozinha;
-import com.algaworks.algafood.domain.service.CadastroCozinhaService;
+import com.algaworks.algafood.domain.service.CozinhaService;
 
 @RestController
 @RequestMapping("/cozinhas")
 public class CozinhaController {
 
 	@Autowired
-	private CadastroCozinhaService cadastroCozinhaService;
+	private CozinhaService cozinhaService;
+
+	@Autowired
+	private CozinhaModelAssembler cozinhaModelAssembler;
+
+	@Autowired
+	private CozinhaInputDisassembler cozinhaInputDisassembler;
 
 	@GetMapping
-	public List<Cozinha> listar() {
-		return cadastroCozinhaService.listar();
+	public List<CozinhaModel> listar() {
+		List<Cozinha> todasCozinhas = cozinhaService.listar();
+
+		return cozinhaModelAssembler.toCollectionModel(todasCozinhas);
 	}
 
-	@GetMapping("/{id}")
-	public Cozinha buscar(@PathVariable Long id) {
-		return cadastroCozinhaService.buscarOuFalhar(id);
+	@GetMapping("/{cozinhaId}")
+	public CozinhaModel buscar(@PathVariable Long cozinhaId) {
+		Cozinha cozinha = cozinhaService.buscarOuFalhar(cozinhaId);
+
+		return cozinhaModelAssembler.toModel(cozinha);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Cozinha adicionar(@RequestBody @Valid Cozinha cozinha) {
-		return cadastroCozinhaService.salvar(cozinha);
+	public CozinhaModel adicionar(@RequestBody @Valid CozinhaInput cozinhaInput) {
+		Cozinha cozinha = cozinhaInputDisassembler.toDomainObject(cozinhaInput);
+		cozinha = cozinhaService.salvar(cozinha);
+
+		return cozinhaModelAssembler.toModel(cozinha);
 	}
 
-	@PutMapping("/{id}")
-	public Cozinha atualizar(@PathVariable Long id, @RequestBody @Valid Cozinha cozinha) {
+	@PutMapping("/{cozinhaId}")
+	public CozinhaModel atualizar(@PathVariable Long cozinhaId, @RequestBody @Valid CozinhaInput cozinhaInput) {
+		Cozinha cozinhaAtual = cozinhaService.buscarOuFalhar(cozinhaId);
+		cozinhaInputDisassembler.copyToDomainObject(cozinhaInput, cozinhaAtual);
+		cozinhaAtual = cozinhaService.salvar(cozinhaAtual);
 
-		cozinha = cadastroCozinhaService.atualizar(id, cozinha);
-
-		return cozinha;
+		return cozinhaModelAssembler.toModel(cozinhaAtual);
 	}
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long id) {
-		cadastroCozinhaService.remover(id);
+		cozinhaService.remover(id);
 
 	}
 
 	@GetMapping("/por-nome")
 	public List<Cozinha> cozinhaPorNome(@RequestParam("nome") String nome) {
 
-		return cadastroCozinhaService.listarPorNome(nome);
+		return cozinhaService.listarPorNome(nome);
 	}
 
 }
