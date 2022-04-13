@@ -78,10 +78,24 @@ public class RestauranteController {
 
 			RestauranteInputDisassembler.copyToDomainObject(restauranteInput, restauranteAtual);
 			return restauranteModelAssembler.toModel(restauranteService.salvar(restauranteAtual));
-			
+
 		} catch (CozinhaNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
 		}
+
+	}
+
+	@PutMapping("/{id}/ativo")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void ativar(@PathVariable Long id) {
+		restauranteService.ativar(id);
+
+	}
+	
+	@DeleteMapping("/{id}/inativar")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void inativar(@PathVariable Long id) {
+		restauranteService.inativar(id);
 
 	}
 }
