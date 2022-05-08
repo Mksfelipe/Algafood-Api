@@ -3,6 +3,7 @@ package com.algaworks.algafood.domain.service;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -15,13 +16,18 @@ import com.algaworks.algafood.domain.repository.GrupoRepository;
 public class GrupoService {
 
 	private static final String MSG_GRUPO_EM_USO = "Grupo de código %d não pode ser removido, pois está em uso";
+	private static final String NOME_JA_EM_USO = "Grupo com o nome: %s, ja existe";
 
 	@Autowired
 	private GrupoRepository grupoRespository;
 
 	@Transactional
 	public Grupo salvar(Grupo grupo) {
-		return grupoRespository.save(grupo);
+		try {
+			return grupoRespository.save(grupo);
+		} catch (DataIntegrityViolationException e) {
+			throw new EntidadeEmUsoException(String.format(NOME_JA_EM_USO, grupo.getNome()));
+		}	
 	}
 
 	@Transactional

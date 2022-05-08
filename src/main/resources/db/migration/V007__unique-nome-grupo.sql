@@ -1,0 +1,1 @@
+ALTER TABLE grupo ADD CONSTRAINT nome UNIQUE (nome);
