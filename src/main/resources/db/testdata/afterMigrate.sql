@@ -1,81 +1,82 @@
-set foreign_key_checks = 0;
 
-delete from cidade;
-delete from cozinha;
-delete from estado;
-delete from forma_pagamento;
-delete from grupo;
-delete from grupo_permissao;
-delete from permissao;
-delete from produto;
-delete from restaurante;
-delete from restaurante_forma_pagamento;
-delete from usuario;
-delete from usuario_grupo;
+	delete from algafood.cidade;
+	delete from algafood.cozinha;
+	delete from algafood.estado;
+	delete from algafood.forma_pagamento;
+	delete from algafood.grupo;
+	delete from algafood.grupo_permissao;
+	delete from algafood.permissao;
+	delete from algafood.produto;
+	delete from algafood.restaurante;
+	delete from algafood.restaurante_forma_pagamento;
+	delete from algafood.usuario;
+	delete from algafood.usuario_grupo;
+	
+	ALTER SEQUENCE algafood.cidade_id_seq RESTART WITH 1;
+	ALTER SEQUENCE algafood.cozinha_id_seq RESTART WITH 1;
+	ALTER SEQUENCE algafood.estado_id_seq RESTART WITH 1;
+	ALTER SEQUENCE algafood.forma_pagamento_id_seq RESTART WITH 1;
+	ALTER SEQUENCE algafood.grupo_id_seq RESTART WITH 1;
+	ALTER SEQUENCE algafood.permissao_id_seq RESTART WITH 1;
+	ALTER SEQUENCE algafood.produto_id_seq RESTART WITH 1;
+	ALTER SEQUENCE algafood.restaurante_id_seq RESTART WITH 1;
+	ALTER SEQUENCE algafood.usuario_id_seq RESTART WITH 1;
+	
+	
 
-set foreign_key_checks = 1;
+	insert into algafood.cozinha (nome) values ('Tailandesa');
+	insert into algafood.cozinha (nome) values ('Indiana');
+	insert into algafood.cozinha (nome) values ('Argentina');
+	insert into algafood.cozinha (nome) values ('Brasileira');
 
-alter table cidade auto_increment = 1;
-alter table cozinha auto_increment = 1;
-alter table estado auto_increment = 1;
-alter table forma_pagamento auto_increment = 1;
-alter table grupo auto_increment = 1;
-alter table permissao auto_increment = 1;
-alter table produto auto_increment = 1;
-alter table restaurante auto_increment = 1;
-alter table usuario auto_increment = 1;
+	insert into algafood.estado (nome) values ('Minas Gerais');
+	insert into algafood.estado (nome) values ('São Paulo');
+	insert into algafood.estado (nome) values ('Ceará');
 
-insert into cozinha (id, nome) values (1, 'Tailandesa');
-insert into cozinha (id, nome) values (2, 'Indiana');
-insert into cozinha (id, nome) values (3, 'Argentina');
-insert into cozinha (id, nome) values (4, 'Brasileira');
+	insert into algafood.cidade (nome, estado_id) values ('Uberlândia', 1);
+	insert into algafood.cidade (nome, estado_id) values ('Belo Horizonte', 1);
+	insert into algafood.cidade (nome, estado_id) values ('São Paulo', 2);
+	insert into algafood.cidade (nome, estado_id) values ('Campinas', 2);
+	insert into algafood.cidade (nome, estado_id) values ('Fortaleza', 3);
+	insert into algafood.cidade (nome, estado_id) values ('Horizonte', 3);
 
-insert into estado (id, nome) values (1, 'Minas Gerais');
-insert into estado (id, nome) values (2, 'São Paulo');
-insert into estado (id, nome) values (3, 'Ceará');
+	insert into algafood.restaurante (nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_bairro) values ('Thai Gourmet', 10, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Y', 1, '38400-999', 'Rua João Pinheiro', '1000', 'Centro');
+	insert into algafood.restaurante (nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro) values ('Thai Delivery', 9.50, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Y', 2,'62882-454', 'Rua Amazonas', '451', 'Proximo Ao moranguinho', 'Diadema');
+	insert into algafood.restaurante (nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo) values ('Tuk Tuk Comida Indiana', 15, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Y');
+	insert into algafood.restaurante (nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo) values ('Java Steakhouse', 12, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Y');
+	insert into algafood.restaurante (nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo) values ( 'Lanchonete do Tio Sam', 11, 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Y');
+	insert into algafood.restaurante (nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo) values ('Bar da Maria', 6, 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Y');
 
-insert into cidade (id, nome, estado_id) values (1, 'Uberlândia', 1);
-insert into cidade (id, nome, estado_id) values (2, 'Belo Horizonte', 1);
-insert into cidade (id, nome, estado_id) values (3, 'São Paulo', 2);
-insert into cidade (id, nome, estado_id) values (4, 'Campinas', 2);
-insert into cidade (id, nome, estado_id) values (5, 'Fortaleza', 3);
-insert into cidade (id, nome, estado_id) values (6, 'Horizonte', 3);
+	insert into algafood.forma_pagamento (descricao) values ('Cartão de crédito');
+	insert into algafood.forma_pagamento (descricao) values ('Cartão de débito');
+	insert into algafood.forma_pagamento (descricao) values ('Dinheiro');
 
-insert into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_bairro) values (1, 'Thai Gourmet', 10, 1, utc_timestamp, utc_timestamp, true, 1, '38400-999', 'Rua João Pinheiro', '1000', 'Centro');
-insert into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro) values (2, 'Thai Delivery', 9.50, 1, utc_timestamp, utc_timestamp, true, 2,'62882-454', 'Rua Amazonas', '451', 'Proximo Ao moranguinho', 'Diadema');
-insert into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo) values (3, 'Tuk Tuk Comida Indiana', 15, 2, utc_timestamp, utc_timestamp, true);
-insert into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo) values (4, 'Java Steakhouse', 12, 3, utc_timestamp, utc_timestamp, true);
-insert into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo) values (5, 'Lanchonete do Tio Sam', 11, 4, utc_timestamp, utc_timestamp, true);
-insert into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo) values (6, 'Bar da Maria', 6, 4, utc_timestamp, utc_timestamp, true);
+	insert into algafood.permissao (nome, descricao) values ('CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
+	insert into algafood.permissao (nome, descricao) values ('EDITAR_COZINHAS', 'Permite editar cozinhas');
 
-insert into forma_pagamento (id, descricao) values (1, 'Cartão de crédito');
-insert into forma_pagamento (id, descricao) values (2, 'Cartão de débito');
-insert into forma_pagamento (id, descricao) values (3, 'Dinheiro');
+	insert into algafood.restaurante_forma_pagamento (restaurante_id, forma_pagamento_id) values (1, 1), (1, 2), (1, 3), (2, 3), (3, 2), (3, 3), (4, 1), (4, 2), (5, 1), (5, 2), (6, 3);
 
-insert into permissao (id, nome, descricao) values (1, 'CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
-insert into permissao (id, nome, descricao) values (2, 'EDITAR_COZINHAS', 'Permite editar cozinhas');
+	insert into algafood.produto (nome, descricao, preco, ativo, restaurante_id) values ('Porco com molho agridoce', 'Deliciosa carne suína ao molho especial', 78.90, 'Y', 1);
+	insert into algafood.produto (nome, descricao, preco, ativo, restaurante_id) values ('Camarão tailandês', '16 camarões grandes ao molho picante', 110, 1, 1);
 
-insert into restaurante_forma_pagamento (restaurante_id, forma_pagamento_id) values (1, 1), (1, 2), (1, 3), (2, 3), (3, 2), (3, 3), (4, 1), (4, 2), (5, 1), (5, 2), (6, 3);
+	insert into algafood.produto (nome, descricao, preco, ativo, restaurante_id) values ('Salada picante com carne grelhada', 'Salada de folhas com cortes finos de carne bovina grelhada e nosso molho especial de pimenta vermelha', 87.20, 1, 2);
 
-insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('Porco com molho agridoce', 'Deliciosa carne suína ao molho especial', 78.90, 1, 1);
-insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('Camarão tailandês', '16 camarões grandes ao molho picante', 110, 1, 1);
+	insert into algafood.produto (nome, descricao, preco, ativo, restaurante_id) values ('Garlic Naan', 'Pão tradicional indiano com cobertura de alho', 21, 1, 3);
+	insert into algafood.produto (nome, descricao, preco, ativo, restaurante_id) values ('Murg Curry', 'Cubos de frango preparados com molho curry e especiarias', 43, 1, 3);
 
-insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('Salada picante com carne grelhada', 'Salada de folhas com cortes finos de carne bovina grelhada e nosso molho especial de pimenta vermelha', 87.20, 1, 2);
+	insert into algafood.produto (nome, descricao, preco, ativo, restaurante_id) values ( 'Bife Ancho', 'Corte macio e suculento, com dois dedos de espessura, retirado da parte dianteira do contrafilé', 79, 1, 4);
+	insert into algafood.produto ( nome, descricao, preco, ativo, restaurante_id) values ( 'T-Bone', 'Corte muito saboroso, com um osso em formato de T, sendo de um lado o contrafilé e do outro o filé mignon', 89, 1, 4);
 
-insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('Garlic Naan', 'Pão tradicional indiano com cobertura de alho', 21, 1, 3);
-insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('Murg Curry', 'Cubos de frango preparados com molho curry e especiarias', 43, 1, 3);
+	insert into algafood.produto (nome, descricao, preco, ativo, restaurante_id) values ( 'Sanduíche X-Tudo', 'Sandubão com muito queijo, hamburger bovino, bacon, ovo, salada e maionese', 19, 1, 5);
 
-insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('Bife Ancho', 'Corte macio e suculento, com dois dedos de espessura, retirado da parte dianteira do contrafilé', 79, 1, 4);
-insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('T-Bone', 'Corte muito saboroso, com um osso em formato de T, sendo de um lado o contrafilé e do outro o filé mignon', 89, 1, 4);
+	insert into algafood.produto (nome, descricao, preco, ativo, restaurante_id) values ( 'Espetinho de Cupim', 'Acompanha farinha, mandioca e vinagrete', 8, 1, 6);
 
-insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('Sanduíche X-Tudo', 'Sandubão com muito queijo, hamburger bovino, bacon, ovo, salada e maionese', 19, 1, 5);
+	insert into algafood.grupo (nome) values ( 'Gerente'), ('Vendedor'), ('Secretária'), ( 'Cadastrador');
 
-insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('Espetinho de Cupim', 'Acompanha farinha, mandioca e vinagrete', 8, 1, 6);
-
-insert into grupo (nome) values ('Gerente'), ('Vendedor'), ('Secretária'), ('Cadastrador');
-
-insert into usuario (id, nome, email, senha, data_cadastro) values
-(1, 'João da Silva', 'joao.ger@algafood.com', '123', utc_timestamp),
-(2, 'Maria Joaquina', 'maria.vnd@algafood.com', '123', utc_timestamp),
-(3, 'José Souza', 'jose.aux@algafood.com', '123', utc_timestamp),
-(4, 'Sebastião Martins', 'sebastiao.cad@algafood.com', '123', utc_timestamp);        
+	insert into algafood.usuario (nome, email, senha, data_cadastro) values
+	('João da Silva', 'joao.ger@algafood.com', '123', CURRENT_TIMESTAMP),
+	('Maria Joaquina', 'maria.vnd@algafood.com', '123', CURRENT_TIMESTAMP ),
+	( 'José Souza', 'jose.aux@algafood.com', '123', CURRENT_TIMESTAMP ),
+	( 'Sebastião Martins', 'sebastiao.cad@algafood.com', '123', CURRENT_TIMESTAMP );     
+	
+	

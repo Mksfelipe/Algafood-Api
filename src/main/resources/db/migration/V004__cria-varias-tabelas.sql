@@ -1,49 +1,49 @@
-create table forma_pagamento (
-	id bigint not null auto_increment,
+CREATE TABLE IF NOT EXISTS forma_pagamento (
+	id SERIAL NOT NULL,
 	descricao varchar(60) not null,
 	primary key (id)
-) engine=InnoDB default charset=utf8;
+);
 
-create table grupo (
-	id bigint not null auto_increment,
+CREATE TABLE IF NOT EXISTS grupo (
+	id SERIAL NOT NULL,
 	nome varchar(60) not null,
 	
 	primary key (id)
-) engine=InnoDB default charset=utf8;
+);
 
-create table grupo_permissao (
-	grupo_id bigint not null,
+CREATE TABLE IF NOT EXISTS grupo_permissao (
+	grupo_id bigint,
 	permissao_id bigint not null,
 	
 	primary key (grupo_id, permissao_id)
-) engine=InnoDB default charset=utf8;
+);
 
-create table permissao (
-	id bigint not null auto_increment,
+CREATE TABLE IF NOT EXISTS permissao (
+	id SERIAL NOT NULL,
 	descricao varchar(60) not null,
 	nome varchar(100) not null,
 	
 	primary key (id)
-) engine=InnoDB default charset=utf8;
+);
 
-create table produto (
-	id bigint not null auto_increment,
+CREATE TABLE IF NOT EXISTS produto (
+	id SERIAL NOT NULL,
 	restaurante_id bigint not null,
 	nome varchar(80) not null,
 	descricao text not null,
 	preco decimal(10,2) not null,
-	ativo tinyint(1) not null,
+	ativo char(1) not null,
 	
 	primary key (id)
-) engine=InnoDB default charset=utf8;
+);
 
-create table restaurante (
-	id bigint not null auto_increment,
+CREATE TABLE IF NOT EXISTS  restaurante (
+	id SERIAL NOT NULL,
 	cozinha_id bigint not null,
 	nome varchar(80) not null,
 	taxa_frete decimal(10,2) not null,
-	data_atualizacao datetime not null,
-	data_cadastro datetime not null,
+	data_atualizacao timestamp not null,
+	data_cadastro timestamp not null,
 	
 	endereco_cidade_id bigint,
 	endereco_cep varchar(9),
@@ -53,31 +53,31 @@ create table restaurante (
 	endereco_bairro varchar(60),
 	
 	primary key (id)
-) engine=InnoDB default charset=utf8;
+);
 
-create table restaurante_forma_pagamento (
+CREATE TABLE IF NOT EXISTS  restaurante_forma_pagamento (
 	restaurante_id bigint not null,
 	forma_pagamento_id bigint not null,
 	
 	primary key (restaurante_id, forma_pagamento_id)
-) engine=InnoDB default charset=utf8;
+);
 
-create table usuario (
-	id bigint not null auto_increment,
+CREATE TABLE IF NOT EXISTS  usuario (
+	id SERIAL NOT NULL,
 	nome varchar(80) not null,
 	email varchar(255) not null,
 	senha varchar(255) not null,
-	data_cadastro datetime not null,
+	data_cadastro timestamp not null,
 	
 	primary key (id)
-) engine=InnoDB default charset=utf8;
+);
 
-create table usuario_grupo (
+CREATE TABLE IF NOT EXISTS  usuario_grupo (
 	usuario_id bigint not null,
 	grupo_id bigint not null,
 	
 	primary key (usuario_id, grupo_id)
-) engine=InnoDB default charset=utf8;
+);
 
 
 

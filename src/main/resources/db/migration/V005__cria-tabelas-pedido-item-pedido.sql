@@ -1,5 +1,5 @@
-create table pedido (
-  id bigint not null auto_increment,
+CREATE TABLE IF NOT EXISTS pedido (
+  id SERIAL NOT NULL,
   subtotal decimal(10,2) not null,
   taxa_frete decimal(10,2) not null,
   valor_total decimal(10,2) not null,
@@ -8,7 +8,7 @@ create table pedido (
   usuario_cliente_id bigint not null,
   forma_pagamento_id bigint not null,
   
-  endereco_cidade_id bigint(20) not null,
+  endereco_cidade_id bigint not null,
   endereco_cep varchar(9) not null,
   endereco_logradouro varchar(100) not null,
   endereco_numero varchar(20) not null,
@@ -16,21 +16,21 @@ create table pedido (
   endereco_bairro varchar(60) not null,
   
   status varchar(10) not null,
-  data_criacao datetime not null,
-  data_confirmacao datetime null,
-  data_cancelamento datetime null,
-  data_entrega datetime null,
+  data_criacao timestamp not null,
+  data_confirmacao timestamp null,
+  data_cancelamento timestamp null,
+  data_entrega timestamp null,
 
   primary key (id),
 
-  constraint fk_pedido_restaurante foreign key (restaurante_id) references restaurante (id),
-  constraint fk_pedido_usuario_cliente foreign key (usuario_cliente_id) references usuario (id),
-  constraint fk_pedido_forma_pagamento foreign key (forma_pagamento_id) references forma_pagamento (id)
-) engine=InnoDB default charset=utf8;
+  constraint fk_pedido_restaurante foreign key (restaurante_id) references algafood.restaurante (id),
+  constraint fk_pedido_usuario_cliente foreign key (usuario_cliente_id) references algafood.usuario (id),
+  constraint fk_pedido_forma_pagamento foreign key (forma_pagamento_id) references algafood.forma_pagamento (id)
+);
 
-create table item_pedido (
-  id bigint not null auto_increment,
-  quantidade smallint(6) not null,
+CREATE TABLE IF NOT EXISTS item_pedido (
+ id SERIAL NOT NULL,
+  quantidade smallint not null,
   preco_unitario decimal(10,2) not null,
   preco_total decimal(10,2) not null,
   observacao varchar(255) null,
@@ -38,8 +38,9 @@ create table item_pedido (
   produto_id bigint not null,
   
   primary key (id),
-  unique key uk_item_pedido_produto (pedido_id, produto_id),
+  CONSTRAINT uk_produto_id_pedido_id UNIQUE (pedido_id, produto_id),
 
-  constraint fk_item_pedido_pedido foreign key (pedido_id) references pedido (id),
-  constraint fk_item_pedido_produto foreign key (produto_id) references produto (id)
-) engine=InnoDB default charset=utf8;
+  constraint fk_item_pedido_pedido foreign key (pedido_id) references algafood.pedido (id),
+  constraint fk_item_pedido_produto foreign key (produto_id) references algafood.produto (id)
+);
+
