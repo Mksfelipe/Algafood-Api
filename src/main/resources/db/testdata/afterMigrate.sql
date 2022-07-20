@@ -1,3 +1,4 @@
+CREATE SCHEMA algafood;
 
 	delete from algafood.cidade;
 	delete from algafood.cozinha;
