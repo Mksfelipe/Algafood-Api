@@ -12,6 +12,7 @@ import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Cozinha;
+import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 
@@ -23,12 +24,15 @@ public class RestauranteService {
 
 	@Autowired
 	private RestauranteRepository restauranteRepository;
-	
+
 	@Autowired
 	private CidadeService cidadeService;
 
 	@Autowired
 	private CozinhaService cozinhaService;
+
+	@Autowired
+	private FormaPagamentoService formaPagamentoService;
 
 	public List<Restaurante> listar() {
 		return restauranteRepository.findAll();
@@ -66,14 +70,33 @@ public class RestauranteService {
 		Restaurante restauranteAtual = buscarOuFalhar(restauranteId);
 		restauranteAtual.ativar();
 	}
-	
+
 	@Transactional
 	public void inativar(Long restauranteId) {
 		Restaurante restauranteAtual = buscarOuFalhar(restauranteId);
-		
+
 		restauranteAtual.inativar();
 	}
 
+	@Transactional
+	public void removerFormaPagamento(Long restauranteId, Long formasPagamentoId) {
+		Restaurante restaurante = buscarOuFalhar(restauranteId);
+		FormaPagamento formaPagamento = formaPagamentoService.buscarOuFalhar(formasPagamentoId);
+		formaPagamento.setId(formasPagamentoId);
+
+		restaurante.removerFormaPagamento(formaPagamento);
+	}
+
+	@Transactional
+	public void adicionarFormaPagamento(Long restauranteId, Long formasPagamentoId) {
+		Restaurante restaurante = buscarOuFalhar(restauranteId);
+		FormaPagamento formaPagamento = formaPagamentoService.buscarOuFalhar(formasPagamentoId);
+		formaPagamento.setId(formasPagamentoId);
+
+		restaurante.adicionarFormaPagamento(formaPagamento);
+	}
+
+	@Transactional
 	public Restaurante buscarOuFalhar(Long restauranteId) {
 		return restauranteRepository.findById(restauranteId)
 				.orElseThrow(() -> new RestauranteNaoEncontradaException((restauranteId)));
