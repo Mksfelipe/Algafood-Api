@@ -8,14 +8,16 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class ProdutoInput {
 	
 	@NotBlank
 	private String nome;
 	
-	@NotNull
-	private Integer restauranteId;
-
 	@Valid
 	@NotNull
 	private String descricao;
@@ -25,6 +27,6 @@ public class ProdutoInput {
 	@Digits(integer=3, fraction=2)
 	private BigDecimal preco;
 	
-	@NotNull
-	private char ativo = 'Y';
+	private Boolean ativo = true;
+	
 }

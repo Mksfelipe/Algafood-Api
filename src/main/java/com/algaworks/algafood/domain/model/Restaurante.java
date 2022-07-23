@@ -52,7 +52,10 @@ public class Restaurante {
 
 	@Convert(converter = BooleanConverter.class)
 	private Boolean ativo;
-
+	
+	@Convert(converter = BooleanConverter.class)
+	private Boolean aberto;
+	
 	@Embedded
 	@JsonIgnore
 	private Endereco endereco;
@@ -78,6 +81,14 @@ public class Restaurante {
 
 	public void inativar() {
 		setAtivo(false);
+	}
+	
+	public void aberto() {
+		setAberto(true);
+	}
+	
+	public void fechado() {
+		setAberto(false);
 	}
 	
 	public boolean removerFormaPagamento(FormaPagamento formaPagamento) {

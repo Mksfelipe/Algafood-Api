@@ -64,18 +64,28 @@ public class RestauranteService {
 		}
 
 	}
+	@Transactional
+	public void abrir(Long restauranteId) {
+		Restaurante restaurante = buscarOuFalhar(restauranteId);
+		restaurante.aberto();
+	}
+	
+	@Transactional
+	public void fechar(Long restauranteId) {
+		Restaurante restaurante = buscarOuFalhar(restauranteId);
+		restaurante.fechado();
+	}
 
 	@Transactional
 	public void ativar(Long restauranteId) {
-		Restaurante restauranteAtual = buscarOuFalhar(restauranteId);
-		restauranteAtual.ativar();
+		Restaurante restaurante = buscarOuFalhar(restauranteId);
+		restaurante.ativar();
 	}
 
 	@Transactional
 	public void inativar(Long restauranteId) {
-		Restaurante restauranteAtual = buscarOuFalhar(restauranteId);
-
-		restauranteAtual.inativar();
+		Restaurante restaurante = buscarOuFalhar(restauranteId);
+		restaurante.inativar();
 	}
 
 	@Transactional
