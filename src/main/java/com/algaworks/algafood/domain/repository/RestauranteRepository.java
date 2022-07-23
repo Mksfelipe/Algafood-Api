@@ -11,7 +11,8 @@ import com.algaworks.algafood.domain.model.Restaurante;
 @Repository
 public interface RestauranteRepository extends JpaRepository<Restaurante, Long>, RestauranteRepositoryQueries {
 
-	@Query("from Restaurante r left join r.cozinha WHERE r.ativo = 'Y'")
+	@Query("from Restaurante r left join r.cozinha")
 	public List<Restaurante> findAll();
 
+	
 }

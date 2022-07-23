@@ -2,10 +2,12 @@ package com.algaworks.algafood.domain.model;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,6 +23,7 @@ import javax.validation.constraints.Digits;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.algaworks.algafood.domain.converter.BooleanConverter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
@@ -47,7 +50,8 @@ public class Restaurante {
 	@JoinColumn(name = "cozinha_id", nullable = false)
 	private Cozinha cozinha;
 
-	private Boolean ativo = Boolean.TRUE;
+	@Convert(converter = BooleanConverter.class)
+	private Boolean ativo;
 
 	@Embedded
 	@JsonIgnore
@@ -66,7 +70,7 @@ public class Restaurante {
 
 	@ManyToMany
 	@JoinTable(name = "restaurante_forma_pagamento", joinColumns = @JoinColumn(name = "restaurante_id"), inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
-	private List<FormaPagamento> formasPagamento = new ArrayList<>();
+	private Set<FormaPagamento> formasPagamento = new HashSet<>();
 	
 	public void ativar() {
 		setAtivo(true);
@@ -76,4 +80,19 @@ public class Restaurante {
 		setAtivo(false);
 	}
 	
+	public boolean removerFormaPagamento(FormaPagamento formaPagamento) {
+		return getFormasPagamento().remove(formaPagamento);
+	}
+	
+	public boolean adicionarFormaPagamento(FormaPagamento formaPagamento) {
+		return getFormasPagamento().add(formaPagamento);
+	}
+	
+	public void removerProduto(Produto produto) {
+		produto.inativar();
+	}
+	
+	public void adicionarProduto(Produto produto) {
+		produto.ativar();
+	}
 }
