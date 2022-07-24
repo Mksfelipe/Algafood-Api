@@ -52,10 +52,10 @@ public class Restaurante {
 
 	@Convert(converter = BooleanConverter.class)
 	private Boolean ativo;
-	
+
 	@Convert(converter = BooleanConverter.class)
 	private Boolean aberto;
-	
+
 	@Embedded
 	@JsonIgnore
 	private Endereco endereco;
@@ -74,7 +74,28 @@ public class Restaurante {
 	@ManyToMany
 	@JoinTable(name = "restaurante_forma_pagamento", joinColumns = @JoinColumn(name = "restaurante_id"), inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
 	private Set<FormaPagamento> formasPagamento = new HashSet<>();
+
+	@ManyToMany
+	@JoinTable(name = "restaurante_usuario_responsavel", joinColumns = @JoinColumn(name = "restaurante_id"), inverseJoinColumns = @JoinColumn(name = "usuario_id"))
+	private Set<Usuario> responsaveis = new HashSet<>();
+
+	public boolean aceitaFormaPagamento(FormaPagamento formaPagamento) {
+	    return getFormasPagamento().contains(formaPagamento);
+	}
+
+	public boolean naoAceitaFormaPagamento(FormaPagamento formaPagamento) {
+	    return !aceitaFormaPagamento(formaPagamento);
+	}
+
 	
+	public boolean removerResponsavel(Usuario usuario) {
+		return getResponsaveis().remove(usuario);
+	}
+
+	public boolean adicionarResponsavel(Usuario usuario) {
+		return getResponsaveis().add(usuario);
+	}
+
 	public void ativar() {
 		setAtivo(true);
 	}
@@ -82,27 +103,27 @@ public class Restaurante {
 	public void inativar() {
 		setAtivo(false);
 	}
-	
+
 	public void aberto() {
 		setAberto(true);
 	}
-	
+
 	public void fechado() {
 		setAberto(false);
 	}
-	
+
 	public boolean removerFormaPagamento(FormaPagamento formaPagamento) {
 		return getFormasPagamento().remove(formaPagamento);
 	}
-	
+
 	public boolean adicionarFormaPagamento(FormaPagamento formaPagamento) {
 		return getFormasPagamento().add(formaPagamento);
 	}
-	
+
 	public void removerProduto(Produto produto) {
 		produto.inativar();
 	}
-	
+
 	public void adicionarProduto(Produto produto) {
 		produto.ativar();
 	}

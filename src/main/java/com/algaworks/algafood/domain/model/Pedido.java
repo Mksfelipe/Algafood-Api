@@ -4,8 +4,11 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,6 +31,7 @@ public class Pedido {
 	@EqualsAndHashCode.Include
 	private Long id;
 	
+	@Column(name = "subtotal")
 	private BigDecimal subTotal;
 	private BigDecimal taxaFrete;
 	private BigDecimal valorTotal;
@@ -41,7 +45,8 @@ public class Pedido {
 	@Embedded
 	private Endereco enderecoEntrega;
 	
-	private StatusPedido status;
+	@Enumerated(EnumType.STRING)
+	private StatusPedido status = StatusPedido.CRIADO;
 
 	@ManyToOne
 	@JoinColumn(nullable = false)
@@ -53,4 +58,18 @@ public class Pedido {
 	
 	@OneToMany(mappedBy = "pedido")
 	private List<ItemPedido> itens;
+	
+	public void calcularValorTotal() {
+		this.subTotal = getItens().stream()
+				.map(item -> item.getPrecoTotal())
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+	}
+	
+	public void definirFrete() {
+	    setTaxaFrete(getRestaurante().getTaxaFrete());
+	}
+
+	public void atribuirPedidoAosItens() {
+	    getItens().forEach(item -> item.setPedido(this));
+	}
 }
