@@ -84,5 +84,12 @@ public class RestauranteProdutoController {
         produtoAtual = produtoService.salvar(produtoAtual);
         
         return produtoModelAssembler.toModel(produtoAtual);
+    }
+    
+    @PutMapping("/{produtoId}/inativar")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void inativar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
+        produtoService.inativar(restauranteId, produtoId);
+        
     }   
 } 

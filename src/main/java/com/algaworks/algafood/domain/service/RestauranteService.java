@@ -14,6 +14,7 @@ import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.model.Restaurante;
+import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 
 @Service
@@ -33,6 +34,9 @@ public class RestauranteService {
 
 	@Autowired
 	private FormaPagamentoService formaPagamentoService;
+	
+	@Autowired
+	private UsuarioService usuarioService;
 
 	public List<Restaurante> listar() {
 		return restauranteRepository.findAll();
@@ -64,18 +68,28 @@ public class RestauranteService {
 		}
 
 	}
+	@Transactional
+	public void abrir(Long restauranteId) {
+		Restaurante restaurante = buscarOuFalhar(restauranteId);
+		restaurante.aberto();
+	}
+	
+	@Transactional
+	public void fechar(Long restauranteId) {
+		Restaurante restaurante = buscarOuFalhar(restauranteId);
+		restaurante.fechado();
+	}
 
 	@Transactional
 	public void ativar(Long restauranteId) {
-		Restaurante restauranteAtual = buscarOuFalhar(restauranteId);
-		restauranteAtual.ativar();
+		Restaurante restaurante = buscarOuFalhar(restauranteId);
+		restaurante.ativar();
 	}
 
 	@Transactional
 	public void inativar(Long restauranteId) {
-		Restaurante restauranteAtual = buscarOuFalhar(restauranteId);
-
-		restauranteAtual.inativar();
+		Restaurante restaurante = buscarOuFalhar(restauranteId);
+		restaurante.inativar();
 	}
 
 	@Transactional
@@ -94,6 +108,22 @@ public class RestauranteService {
 		formaPagamento.setId(formasPagamentoId);
 
 		restaurante.adicionarFormaPagamento(formaPagamento);
+	}
+	
+	@Transactional
+	public void desassociarResponsavel(Long restauranteId, Long usuarioId) {
+	    Restaurante restaurante = buscarOuFalhar(restauranteId);
+	    Usuario usuario = usuarioService.buscarOuFalhar(usuarioId);
+	    
+	    restaurante.removerResponsavel(usuario);
+	}
+
+	@Transactional
+	public void associarResponsavel(Long restauranteId, Long usuarioId) {
+	    Restaurante restaurante = buscarOuFalhar(restauranteId);
+	    Usuario usuario = usuarioService.buscarOuFalhar(usuarioId);
+	    
+	    restaurante.adicionarResponsavel(usuario);
 	}
 
 	@Transactional
