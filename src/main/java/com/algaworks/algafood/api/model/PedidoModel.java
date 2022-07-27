@@ -1,12 +1,10 @@
-package com.algaworks.algafood.domain.model;
+package com.algaworks.algafood.api.model;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import com.algaworks.algafood.api.model.EnderecoModel;
-import com.algaworks.algafood.api.model.FormaPagamentoModel;
-import com.algaworks.algafood.api.model.UsuarioModel;
+import com.algaworks.algafood.domain.model.RestauranteResumoModel;
 
 import lombok.Getter;
 import lombok.Setter;
