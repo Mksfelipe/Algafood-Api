@@ -91,10 +91,10 @@ SET session_replication_role = 'replica';
 	( 'José Souza', 'jose.aux@algafood.com', '123', CURRENT_TIMESTAMP ),
 	( 'Sebastião Martins', 'sebastiao.cad@algafood.com', '123', CURRENT_TIMESTAMP );     
 	
-	insert into pedido (restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep, 
+	insert into pedido (codigo,restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep, 
     endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro,
     status, data_criacao, subtotal, taxa_frete, valor_total)
-	values (1, 1, 1, 1, '38400-000', 'Rua Floriano Peixoto', '500', 'Apto 801', 'Brasil',
+	values ('118c788a-1119-11ed-b44c-0242ac110002', 1, 1, 1, 1, '38400-000', 'Rua Floriano Peixoto', '500', 'Apto 801', 'Brasil',
 	'CRIADO', CURRENT_TIMESTAMP, 298.90, 10, 308.90);
 
 	insert into item_pedido (pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao)
@@ -103,11 +103,11 @@ SET session_replication_role = 'replica';
 	insert into item_pedido (pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao)
 	values (1, 2, 2, 110, 220, 'Menos picante, por favor');
 
-	insert into pedido (restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep, 
+	insert into pedido (codigo, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep, 
     endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro,
     status, data_criacao, subtotal, taxa_frete, valor_total)
-	values (4, 1, 2, 1, '38400-111', 'Rua Acre', '300', 'Casa 2', 'Centro',
-	'CRIADO', CURRENT_TIMESTAMP, 79, 0, 79);
+	values ('655552ac-1119-11ed-b44c-0242ac110002', 4, 1, 2, 1, '38400-111', 'Rua Acre', '300', 'Casa 2', 'Centro',
+	'CRIADO', CURRENT_TIMESTAMP, 79, 11, 90);
 
 	insert into item_pedido (pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao)
 	values (2, 6, 1, 79, 79, 'Ao ponto');
