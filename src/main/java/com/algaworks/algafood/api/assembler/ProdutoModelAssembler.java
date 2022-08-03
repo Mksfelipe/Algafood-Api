@@ -22,7 +22,6 @@ public class ProdutoModelAssembler {
 	
 	public List<ProdutoModel> toCollectionModel(List<Produto> produtos) {
 		return produtos.stream().map(produto -> toModel(produto))
-				.filter(produto -> produto.isAtivo() == true)
 				.collect(Collectors.toList());
 	}
 	

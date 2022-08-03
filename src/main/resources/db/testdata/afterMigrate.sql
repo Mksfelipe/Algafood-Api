@@ -1,4 +1,5 @@
 SET session_replication_role = 'replica';
+
 	delete from algafood.cidade;
 	delete from algafood.cozinha;
 	delete from algafood.estado;
