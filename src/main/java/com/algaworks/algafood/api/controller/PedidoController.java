@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.assembler.PedidoInputDisassembler;
+import com.algaworks.algafood.api.assembler.PedidoModelAssembler;
 import com.algaworks.algafood.api.assembler.PedidoResumoModelAssembler;
+import com.algaworks.algafood.api.model.PedidoModel;
 import com.algaworks.algafood.api.model.PedidoResumoModel;
 import com.algaworks.algafood.api.model.input.PedidoInput;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
@@ -23,7 +25,9 @@ import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Pedido;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.PedidoRepository;
+import com.algaworks.algafood.domain.repository.filter.PedidoFilter;
 import com.algaworks.algafood.domain.service.EmissaoPedidoService;
+import com.algaworks.algafood.infrastructure.repository.spec.PedidoSpec;
 
 @RestController
 @RequestMapping(value = "/pedidos")
@@ -41,18 +45,21 @@ public class PedidoController {
     @Autowired
     private PedidoInputDisassembler pedidoInputDisassembler;
     
+    @Autowired
+    private PedidoModelAssembler modelAssembler;
+    
     @GetMapping
-    public List<PedidoResumoModel> listar() {
-        List<Pedido> todosPedidos = pedidoRepository.findAll();
+    public List<PedidoResumoModel> pesquisar(PedidoFilter filter) {
+        List<Pedido> todosPedidos = pedidoRepository.findAll(PedidoSpec.usandoFiltro(filter));
         
         return pedidoModelAssembler.toCollectionModel(todosPedidos);
     }
     
     @GetMapping("/{codigoPedido}")
-    public PedidoResumoModel buscar(@PathVariable String codigoPedido) {
+    public PedidoModel buscar(@PathVariable String codigoPedido) {
         Pedido pedido = emissaoPedido.buscarOuFalhar(codigoPedido);
         
-        return pedidoModelAssembler.toModel(pedido);
+        return modelAssembler.toModel(pedido);
     }           
     
     @PostMapping
