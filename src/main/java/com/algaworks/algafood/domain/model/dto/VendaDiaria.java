@@ -13,6 +13,6 @@ public class VendaDiaria {
 
 	private String data;
 	private Long totalVendas;
-	private BigDecimal totalFatura;
+	private BigDecimal totalFaturado;
 	
 }
