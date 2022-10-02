@@ -1,6 +1,5 @@
 package com.algaworks.algafood.api.controller;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.UUID;
 
