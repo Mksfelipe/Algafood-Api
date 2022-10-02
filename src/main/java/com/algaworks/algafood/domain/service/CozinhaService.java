@@ -6,6 +6,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,8 +31,10 @@ public class CozinhaService {
 		return cozinhaRepository.save(cozinha);
 	}
 
-	public List<Cozinha> listar() {
-		return cozinhaRepository.findAll();
+	public Page<Cozinha> listar(Pageable pageable) {
+		Page<Cozinha> cozinhaPage = cozinhaRepository.findAll(pageable);
+	
+		return cozinhaPage;
 	}
 
 	public Cozinha atualizar(Long id, Cozinha cozinha) {
